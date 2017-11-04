@@ -1,28 +1,44 @@
 from django.shortcuts import render
 from django.views.generic.base import View
+from django.views.generic.list import ListView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from blog.models import Blog
 
 # Create your views here.
 
-
-# def index(request):
-#     return render(request, "blog/index.html", {
-#         ""
-#     })
-
-class BlogListView(View):
+class BlogListView(ListView):
     """博客列表页"""
-    def get(self, request):
-        all_blogs = Blog.objects.all().order_by('create_time')
+    model = Blog
+    template_name = "blog/blog_list.html"
+    context_object_name = "blogs"
+    paginate_by = 2
+    queryset = Blog.objects.all().order_by("-create_time")
 
-        return render(request, 'blog/index.html', {
-            'all_blogs': all_blogs,
-        })
+# class BlogListView(View):
+#     """博客列表页"""
+    # def get(self, request):
+    #     all_blogs = Blog.objects.all().order_by('-create_time')
+    #     limit = 2   # 每页显示的记录数
+    #     paginator = Paginator(all_blogs, limit)     # 实例化一个分页对象
+    #     page = request.GET.get('page')  # 获取页码
+    #     try:
+    #         blogs = paginator.page(page)    # 获取某页对应的记录
+    #     except PageNotAnInteger:    # 如果页码不是个整数
+    #         blogs = paginator.page(1)   # 取第一页的记录
+    #     except EmptyPage:   # 如果页码太大，没有相应的记录
+    #         blogs = paginator.page(paginator.num_pages)     # 取最后一页的记录
+    #
+    #     return render(request, 'blog/blog_list.html', {
+    #         'blogs': blogs,
+    #     })
 
 
 class BlogDetailView(View):
-    """博客详情页"""
+    """
+    博客详情页
+    参考: https://simpleisbetterthancomplex.com/tutorial/2016/08/03/how-to-paginate-with-django.html
+    """
     def get(self, request, blog_id):
         blog = Blog.objects.get(id=int(blog_id))
 
