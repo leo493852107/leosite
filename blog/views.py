@@ -1,19 +1,48 @@
 from django.shortcuts import render
 from django.views.generic.base import View
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from blog.models import Blog
 
 # Create your views here.
 
+
 class BlogListView(ListView):
-    """博客列表页"""
+    """
+    博客列表页
+    参考: https://simpleisbetterthancomplex.com/tutorial/2016/08/03/how-to-paginate-with-django.html
+    """
     model = Blog
     template_name = "blog/blog_list.html"
     context_object_name = "blogs"
     paginate_by = 2
     queryset = Blog.objects.all().order_by("-create_time")
+
+
+class BlogDetailView(DetailView):
+    """
+    博客详情页
+    参考: http://zmrenwu.com/post/33/
+    """
+
+    model = Blog
+    template_name = "blog/blog_detail.html"
+    context_object_name = "blog"
+
+    def get(self, request, *args, **kwargs):
+        response = super(BlogDetailView, self).get(request, *args, **kwargs)
+        # 将文章阅读量 +1
+        self.object.increase_views()
+        # self.object.read_num += 1
+        # self.object.save()
+        return response
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(BlogDetailView, self).get_context_data(**kwargs)
+    #     return context
+
 
 # class BlogListView(View):
 #     """博客列表页"""
@@ -34,21 +63,19 @@ class BlogListView(ListView):
     #     })
 
 
-class BlogDetailView(View):
-    """
-    博客详情页
-    参考: https://simpleisbetterthancomplex.com/tutorial/2016/08/03/how-to-paginate-with-django.html
-    """
-    def get(self, request, blog_id):
-        blog = Blog.objects.get(id=int(blog_id))
-
-        # 增加博客点击数
-        blog.read_num += 1
-        blog.save()
-
-        return render(request, "blog/blog_detail.html", {
-            "blog": blog,
-
-        })
-
+# class BlogDetailView(View):
+#     """
+#     博客详情页
+#     """
+#     def get(self, request, blog_id):
+#         blog = Blog.objects.get(id=int(blog_id))
+#
+#         # 增加博客点击数
+#         blog.read_num += 1
+#         blog.save()
+#
+#         return render(request, "blog/blog_detail.html", {
+#             "blog": blog,
+#
+#         })
 
