@@ -20,3 +20,11 @@ class Blog(models.Model):
         verbose_name = "博客"
         verbose_name_plural = verbose_name
 
+    def increase_views(self):
+        """
+        阅读数 + 1
+        相当于封装了方法, 供 blog/views.py 中调用
+        """
+        self.read_num += 1
+        self.save()
+

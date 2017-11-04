@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^list/$', BlogListView.as_view(), name="blog_list"),
 
     # 博客详情页
-    url(r'^detail/(?P<blog_id>\d+)/$', BlogDetailView.as_view(), name="blog_detail"),
+    url(r'^detail/(?P<pk>\d+)/$', BlogDetailView.as_view(), name="blog_detail"),
 
 
 ]

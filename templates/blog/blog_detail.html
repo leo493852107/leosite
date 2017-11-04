@@ -14,15 +14,15 @@
         <div class="col-sm-8 blog-main">
 
         <div class="blog-post">
-            <h2 class="blog-post-title">{{ blog.title }}</h2>
-            <p class="blog-post-meta">{{ blog.create_time }}</p>
-            <p>{{ blog.abstract }}</p>
+            <h2 class="blog-post-title">{{ object.title }}</h2>
+            <p class="blog-post-meta">{{ object.create_time }}</p>
+            <p>{{ object.abstract }}</p>
             <hr>
-            <div>{{ blog.content }}</div>
+            <div>{{ object.content }}</div>
             <hr>
             <div>
-                    阅读({{ blog.read_num }})
-                    评论({{ blog.comment_num }})
+                    阅读({{ object.read_num }})
+                    评论({{ object.comment_num }})
             </div>
           </div><!-- /.blog-post -->
 
