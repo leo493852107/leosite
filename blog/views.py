@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.base import View
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from blog.models import Blog
+import markdown
+
+from blog.models import Blog, Category
 
 # Create your views here.
 
@@ -16,7 +18,7 @@ class BlogListView(ListView):
     """
     model = Blog
     template_name = "blog/blog_list.html"
-    context_object_name = "blogs"
+    context_object_name = "blog_list"
     paginate_by = 2
     queryset = Blog.objects.all().order_by("-create_time")
 
@@ -37,11 +39,49 @@ class BlogDetailView(DetailView):
         self.object.increase_views()
         # self.object.read_num += 1
         # self.object.save()
+        # 视图必须返回一个 HttpResponse 对象
         return response
+
+    def get_object(self, queryset=None):
+        # 覆写 get_object 方法的目的是因为需要对 blog 的 content 值进行渲染
+        blog = super(BlogDetailView, self).get_object(queryset=None)
+        blog.content = markdown.markdown(blog.content,
+                                         extensions=[
+                                            'markdown.extensions.extra',
+                                            'markdown.extensions.codehilite',
+                                            'markdown.extensions.toc',
+                                         ])
+        return blog
 
     # def get_context_data(self, **kwargs):
     #     context = super(BlogDetailView, self).get_context_data(**kwargs)
     #     return context
+
+
+class ArchivesView(ListView):
+    model = Blog
+    template_name = "blog/blog_list.html"
+    context_object_name = "blog_list"
+
+    def get_queryset(self):
+        year = self.kwargs.get("year")
+        month = self.kwargs.get("month")
+        return super(ArchivesView, self).get_queryset().filter(
+            create_time__year=year,
+            create_time__month=month
+        )
+
+
+class CategoryView(ListView):
+    model = Blog
+    template_name = "blog/blog_list.html"
+    context_object_name = "blog_list"
+
+    def get_queryset(self):
+        category = get_object_or_404(Category, pk=self.kwargs.get("pk"))
+        return super(CategoryView, self).get_queryset().filter(category=category)
+
+
 
 
 # class BlogListView(View):

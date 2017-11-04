@@ -1,4 +1,5 @@
 {% extends 'blog/base.html' %}
+{% load blog_tags %}
 
 {% block container %}
 
@@ -18,7 +19,7 @@
             <p class="blog-post-meta">{{ object.create_time }}</p>
             <p>{{ object.abstract }}</p>
             <hr>
-            <div>{{ object.content }}</div>
+            <div>{{ object.content|safe }}</div>
             <hr>
             <div>
                     阅读({{ object.read_num }})
@@ -29,29 +30,25 @@
 
         </div><!-- /.blog-main -->
 
-
-        {# 侧边栏 #}
+{# 侧边栏 #}
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
           <div class="sidebar-module sidebar-module-inset">
             <h4>关于作者</h4>
             <p>李建舜：毕业于浙江师范大学，目前在宁波工作。</p>
           </div>
           <div class="sidebar-module">
-            <h4>Archives</h4>
-            <ol class="list-unstyled">
-              <li><a href="http://v3.bootcss.com/examples/blog/#">March 2014</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">February 2014</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">January 2014</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">December 2013</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">November 2013</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">October 2013</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">September 2013</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">August 2013</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">July 2013</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">June 2013</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">May 2013</a></li>
-              <li><a href="http://v3.bootcss.com/examples/blog/#">April 2013</a></li>
-            </ol>
+            <h3 class="widget-title">最新文章</h3>
+              {% get_recent_blogs as recent_blog_list %}
+              <ul>
+                  {% for recent_blog in recent_blog_list %}
+                      <li>
+                        <a href="{{ recent_blog.get_absolute_url }}">{{ recent_blog.title }}</a>
+                      </li>
+                      {% empty %}
+                      暂无文章！
+                  {% endfor %}
+
+              </ul>
           </div>
           <div class="sidebar-module">
             <h4>Elsewhere</h4>
