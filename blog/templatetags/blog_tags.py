@@ -24,7 +24,8 @@ def get_recent_blogs(num=5):
     获取最新文章，默认取5篇
     参考: http://zmrenwu.com/post/12/
     """
-    return Blog.objects.all().order_by("-create_time")[:num]
+    return Blog.objects.all()[:num]
+    # return Blog.objects.all().order_by("-create_time")[:num]
 
 
 @register.simple_tag

@@ -28,26 +28,41 @@
 
           <nav>
               {% if is_paginated %}
-                  <ul class="pagination">
+                  <div class="pagination">
                     {% if page_obj.has_previous %}
                         <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
                     {% else %}
                         <li class="disabled"><span>&laquo;</span></li>
                     {% endif %}
-                    {% for i in paginator.page_range %}
-                        {% if page_obj.number == i %}
-                            <li class="active"><span>{{ i }}<span class="sr-only">(current)</span></span></li>
-                        {% else %}
-                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% if first %}
+                        <li><a href="?page=1" class="active">1</a></li>
+                    {% endif %}
+                    {% if left %}
+                        {% if left_has_more %}
+                            <li><span>...</span></li>
                         {% endif %}
-                    {% endfor %}
-                    {% if page_obj.has_next %}
+                        {% for i in left %}
+                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                  <li class="active"><a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
+                  {% if right %}
+                        {% for i in right %}
+                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endfor %}
+                      {% if right_has_more %}
+                          <li><span>...</span></li>
+                      {% endif %}
+                  {% endif %}
+                  {% if last %}
+                      <li><a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+                  {% endif %}
+                  {% if page_obj.has_next %}
                         <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
                     {% else %}
                         <li class="disabled"><span>&raquo;</span></li>
                     {% endif %}
-                  </ul>
-
+                  </div>
               {% endif %}
               </ul>
           </nav>
