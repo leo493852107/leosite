@@ -17,7 +17,7 @@
             {% for blog in blog_list %}
                 <div class="blog-post">
                     <h2 class="blog-post-title"><a href="{% url 'blog:detail' blog.id %}">{{ blog.title }}</a></h2>
-            <p class="blog-post-meta">{{ blog.create_time }} </p>
+            <p class="blog-post-meta">{{ blog.create_time }} {{ blog.category }} </p>
                 <p>{{ blog.excerpt }}<a href="{% url 'blog:detail' blog.id %}"> 阅读更多</a></p>
                 <div>
                     阅读({{ blog.read_num }})
@@ -109,7 +109,23 @@
               <ul>
                   {% for category in categories %}
                       <li>
-                        <a href="{% url 'blog:category' category.pk %}">{{ category.name }} <span class="blog-post">(13)</span></a>
+                        <a href="{% url 'blog:category' category.pk %}">{{ category.name }}
+                            <span class="blog-post">({{ category.num_blogs }})</span></a>
+                      </li>
+                      {% empty %}
+                      暂无分类！
+                  {% endfor %}
+
+              </ul>
+        </div>
+        <div class="sidebar-module">
+            <h3 class="widget-title">标签</h3>
+              {% get_tags as tags %}
+              <ul>
+                  {% for tag in tags %}
+                      <li>
+                        <a href="{% url 'blog:tag' tag.pk %}">{{ tag.name }}
+                            <span class="blog-post">({{ tag.num_blogs }})</span></a>
                       </li>
                       {% empty %}
                       暂无分类！

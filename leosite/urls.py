@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """leosite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -22,5 +24,6 @@ urlpatterns = [
     # url(r'^comments/', include("comments.urls")),
     url(r'', include("blog.urls")),
     url(r'', include("comments.urls")),
+    url(r'^search/', include('haystack.urls')),
 
 ]

@@ -5,9 +5,10 @@ __author__ = "leo"
 __time__ = "2017-10-22"
 
 
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from blog.views import BlogListView, BlogDetailView, ArchivesView, CategoryView
+from blog.feeds import AllPostsRssFeed
 
 
 app_name = "blog"
@@ -24,6 +25,16 @@ urlpatterns = [
 
     # 博客分类页
     url(r'^category/(?P<pk>\d+)/$', CategoryView.as_view(), name="category"),
+
+    # 博客标签页
+    url(r'^tag/(?P<pk>\d+)/$', CategoryView.as_view(), name="tag"),
+
+
+    # RSS 订阅
+    url(r'^all/rss/$', AllPostsRssFeed(), name="rss"),
+
+    # django haystack 搜索功能
+    # url(r'^search/', include('haystack.urls')),
 
 ]
 

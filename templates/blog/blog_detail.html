@@ -17,6 +17,12 @@
         <div class="blog-post">
             <h2 class="blog-post-title">{{ object.title }}</h2>
             <p class="blog-post-meta">{{ object.create_time }}</p>
+            {% block toc %}
+                <div class="widget widget-title">
+                    <h3 class="widget-title">文章目录</h3>
+                    {{ blog.toc|safe }}
+                </div>
+            {% endblock %}
             <p>{{ object.abstract }}</p>
             <hr>
             <div>{{ object.content|safe }}</div>

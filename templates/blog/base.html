@@ -39,6 +39,11 @@
         <nav class="blog-nav">
           <a class="blog-nav-item active" href="{% url "blog:list" %}">博客主页</a>
           <a class="blog-nav-item" href="#">其他</a>
+          <a class="blog-nav-item" href="{% url 'blog:rss' %}"><span class="ion-social-rss-outline"></span>RSS 订阅</a>
+            <form role="search" method="get" id="searchform" action="{% url 'haystack_search' %}">
+  <input type="search" name="q" placeholder="搜索" required>
+  <button type="submit"><span class="ion-ios-search-strong"></span></button>
+</form>
         </nav>
       </div>
     </div>

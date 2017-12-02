@@ -3,10 +3,12 @@ from django.views.generic.base import View
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils.text import slugify
 
+from markdown.extensions.toc import TocExtension
 import markdown
 
-from blog.models import Blog, Category
+from blog.models import Blog, Category, Tag
 from comments.forms import CommentForm
 
 # Create your views here.
@@ -20,7 +22,7 @@ class BlogListView(ListView):
     model = Blog
     template_name = "blog/blog_list.html"
     context_object_name = "blog_list"
-    paginate_by = 1
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
         """
@@ -172,12 +174,14 @@ class BlogDetailView(DetailView):
     def get_object(self, queryset=None):
         # 覆写 get_object 方法的目的是因为需要对 blog 的 content 值进行渲染
         blog = super(BlogDetailView, self).get_object(queryset=None)
-        blog.content = markdown.markdown(blog.content,
-                                         extensions=[
-                                            'markdown.extensions.extra',
-                                            'markdown.extensions.codehilite',
-                                            'markdown.extensions.toc',
-                                         ])
+        md = markdown.Markdown(extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+            # 记得在顶部引入 TocExtension 和 slugify
+            TocExtension(slugify=slugify),
+        ])
+        blog.content = md.convert(blog.content)
+        blog.toc = md.toc
         return blog
 
     def get_context_data(self, **kwargs):
@@ -216,6 +220,15 @@ class CategoryView(ListView):
         category = get_object_or_404(Category, pk=self.kwargs.get("pk"))
         return super(CategoryView, self).get_queryset().filter(category=category)
 
+
+class TagView(ListView):
+    model = Blog
+    template_name = "blog/blog_list.html"
+    context_object_name = "blog_list"
+
+    def get_queryset(self):
+        tag = get_object_or_404(Tag, pk=self.kwargs.get("pk"))
+        return super(TagView, self).get_queryset().filter(tags=tag)
 
 
 
